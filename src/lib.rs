@@ -33,6 +33,7 @@ pub struct Header {
 
 pub enum Messages {
     INSNavGeod,
+    AttEuler,
     Unsupported,
 }
 
@@ -40,9 +41,31 @@ impl From<u16> for Messages {
     fn from(block_number: u16) -> Self {
         match block_number {
             4226 => Self::INSNavGeod,
+            5938 => Self::AttEuler,
             _ => Self::Unsupported,
         }
     }
+}
+
+// Attitude Euler Block 5938
+#[binrw]
+#[derive(Debug)]
+pub struct AttEuler {
+    pub tow: u32,
+    pub wnc: u16,
+    pub nrsv: u8,
+    // TODO: create Error enum
+    pub error: u8,
+    pub mode: u16,
+    _reserved: u16,
+
+    pub heading: f32,
+    pub pitch: f32,
+    pub roll: f32,
+
+    pub pitch_dot: f32,
+    pub roll_dot: f32,
+    pub heading_dot: f32,
 }
 
 // INS Nav Geod Block 4226
